@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options Aventure | Xtreme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="notifications.css">
+    <script src="notifications.js"></script>
+</head>
+
+<body class="bg-black text-white font-sans">
+    <div class="max-w-5xl mx-auto py-12 px-6">
+    <style>
+        .bus-container {
+            position: relative;
+            width: 240px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 60px 20px 20px 20px;
+            border: 2px solid #333;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+        .bus-container::before {
+             content: ''; position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+             width: 180px; height: 35px; background: linear-gradient(to bottom, #111, #222);
+             border-radius: 10px; border: 1px solid #444;
+        }
+        .bus-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .bus-aisle { width: 20px; }
+        .seat { 
+            width: 35px; height: 35px; 
+            background: #333; /* Incolore par défaut (sombre) */
+            border: 1px solid #555;
+            border-radius: 6px 6px 10px 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .seat:hover {
+            border-color: #FFD700;
+            transform: scale(1.1);
+        }
+        .seat.selected {
+            background: #FFD700 !important;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px #FFD700;
+        }
+        /* Prix au survol */
+        .seat:hover::after {
+            content: attr(data-price) "€";
+            position: absolute;
+            top: -25px; left: 50%; transform: translateX(-50%);
+            background: #FFD700; color: black;
+            padding: 2px 5px; border-radius: 3px;
+            font-size: 10px; font-weight: bold;
+            white-space: nowrap; z-index: 20;
+        }
+    </style>
+    
+    <div class="max-w-6xl mx-auto py-12 px-6">
+        <a href="index.html" class="text-[#FFD700] font-bold text-sm uppercase flex items-center gap-2 tracking-widest hover:text-white transition">← Retour</a>
+        <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div>
+                <h1 id="t" class="text-5xl md:text-6xl font-black uppercase italic mb-6 leading-none tracking-tighter">Aventure</h1>
+                <p id="d" class="text-gray-400 text-lg mb-6 font-light"></p>
+                
+                <!-- Info 10 Jours & Places -->
+                <div class="flex flex-wrap items-center gap-4 mb-8 text-xs font-bold tracking-widest uppercase border-b border-white/10 pb-6">
+                    <span class="bg-[#FFD700] text-black px-3 py-1 rounded-full">Départ : 20 Mars</span>
+                    <span class="text-red-500 animate-pulse">⏰ Fermeture J-8</span>
+                    <div class="ml-auto text-right">
+                        <span class="text-gray-500 mr-2">Places :</span>
+                        <span class="text-[#FFD700] text-lg">4 / 42</span>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="text-white font-bold uppercase text-xs tracking-widest mb-4">Inclus dans l'expérience :</h4>
+                    <ul id="inc" class="grid grid-cols-2 gap-3"></ul>
+                </div>
+
+                <div id="i" class="h-64 md:h-80 rounded-3xl overflow-hidden border border-white/10 shadow-2xl"></div>
+            </div>
+            
+            <div class="bg-zinc-900 p-8 rounded-[2rem] border border-white/5 shadow-2xl h-fit">
+                <h3 class="text-xl font-black uppercase mb-6 text-[#FFD700] tracking-widest">Options</h3>
+                <div id="opts" class="space-y-4 mb-8"></div>
+                
+                <!-- Bus Selection -->
+                <div class="border-t border-white/10 pt-6 mb-8">
+                    <h3 class="text-xl font-black uppercase mb-4 text-[#FFD700] tracking-widest flex justify-between items-center">
+                        Votre Place <span id="seat-msg" class="text-xs text-gray-500 font-normal normal-case tracking-normal">Aucun siège sélectionné</span>
+                    </h3>
+                    
+                    <div class="flex flex-col items-center">
+                        <div class="bus-container" id="bus-map">
+                            <!-- Seats generated explicitly to look like a bus -->
+                        </div>
+                        
+                        <div class="mt-6 w-full flex justify-center">
+                             <button id="random-seat-btn" class="text-xs font-bold uppercase tracking-widest text-[#FFD700] border border-[#FFD700] px-4 py-2 rounded-full hover:bg-[#FFD700] hover:text-black transition">
+                                 Place Aléatoire (Sans supplément)
+                             </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="text-center md:text-left">
+                        <p class="text-gray-500 uppercase text-[10px] font-bold tracking-widest">Total Estimé</p>
+                        <p id="tot" class="text-5xl font-black text-white tracking-tighter">0€</p>
+                    </div>
+                    <button id="nxt" class="w-full md:w-auto bg-[#FFD700] text-black px-12 py-4 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(255,215,0,0.3)]">Réserver</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/50 backdrop-blur-md transition-opacity duration-300">
+        <div class="bg-black/90 p-8 rounded-3xl border border-[#FFD700] shadow-[0_0_50px_rgba(255,215,0,0.2)] max-w-sm w-full relative">
+            <button onclick="document.getElementById('login-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-black uppercase italic text-white">Connexion <span class="text-[#FFD700]">Requise</span></h3>
+                <p class="text-gray-400 text-xs mt-2">Connectez-vous pour finaliser votre réservation.</p>
+            </div>
+
+            <form onsubmit="handleModalLogin(event)" class="space-y-4">
+                <input type="email" id="m-email" required placeholder="Email" class="w-full bg-zinc-800 border border-white/10 rounded-xl p-3 text-white focus:border-[#FFD700] outline-none">
+                <input type="password" required placeholder="Mot de Passe" class="w-full bg-zinc-800 border border-white/10 rounded-xl p-3 text-white focus:border-[#FFD700] outline-none">
+                <button type="submit" class="w-full bg-[#FFD700] text-black py-3 rounded-xl font-bold uppercase hover:bg-white transition">Me Connecter</button>
+            </form>
+            
+            <p class="text-center text-gray-500 text-[10px] mt-4">Pas encore membre ? <a href="inscription.html" class="text-white underline">Créer un compte</a></p>
+        </div>
+    </div>
+
+    <script>
+        const p = new URLSearchParams(window.location.search); 
+        const act = p.get('activite') || 'padel';
+        
+        // ... (data object remains same)
+        const data = {
+            padel: { 
+                t:"Padel Masterclass", b:95, d:"Session intense avec coach pro + accès Spa VIP.", 
+                inc:["Coach Pro", "Location Raquette", "Accès Spa (2h)", "Boissons"],
+                img:"https://images.unsplash.com/photo-1596559058872-595ea5281b7b?q=80&w=800", 
+                o:[{n:"Massage Récup (30min)", p:45}, {n:"Vidéo GoPro", p:25}] 
+            },
+            survie: { 
+                t:"Immersion Wild", b:125, d:"Apprenez à survivre 24h en forêt hostile.", 
+                inc:["Guide Expert", "Kit Survie Prêté", "Repas Lyophilisé", "Assurance"],
+                img:"https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=800", 
+                o:[{n:"Ration Premium", p:20}, {n:"Couteau Gravé", p:55}] 
+            },
+            roadtrip: { 
+                t:"Roadtrip Performance", b:180, d:"Pilotage de sportives sur routes sinueuses.", 
+                inc:["Porsche/Audi RS", "Carburant", "Instructeur", "Assurance Tous Risques"],
+                img:"https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=800", 
+                o:[{n:"Passager additionnel", p:40}, {n:"Déjeuner Gastronomique", p:50}] 
+            },
+             chutelibre: { 
+                t:"Chute Libre", b:250, d:"Saut en tandem à 4000m d'altitude.", 
+                inc:["Saut Tandem", "Formation", "Certificat", "Équipement"],
+                img:"https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=800", 
+                o:[{n:"Vidéo 360°", p:80}, {n:"Photos HD", p:40}] 
+            },
+            plongee: { 
+                t:"Plongée Ice", b:150, d:"Exploration sous la glace en lac gelé.", 
+                inc:["Combinaison Étanche", "Bouteilles", "Instructeur", "Chocolat Chaud"],
+                img:"https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800", 
+                o:[{n:"Vidéo Sous-marine", p:45}, {n:"2ème Plongée", p:80}] 
+            },
+            escalade: { 
+                t:"Escalade Solo", b:80, d:"Grimpe en falaise sécurisée pour débutant ou pro.", 
+                inc:["Baudrier/Cordes", "Chaussons", "Guide", "Collations"],
+                img:"https://images.unsplash.com/photo-1522163182402-834f871fd851?q=80&w=800", 
+                o:[{n:"Cours Technique", p:30}, {n:"Location GoPro", p:25}] 
+            }
+        };
+
+        const c = data[act] || data['padel'];
+        
+        document.getElementById('t').innerText = c.t;
+        document.getElementById('d').innerText = c.d;
+        document.getElementById('i').innerHTML = `<img src="${c.img}" class="w-full h-full object-cover">`;
+        
+        document.getElementById('inc').innerHTML = c.inc.map(item => 
+            `<li class="flex items-center text-sm text-gray-300 font-medium"><span class="w-1.5 h-1.5 bg-[#FFD700] rounded-full mr-2"></span>${item}</li>`
+        ).join('');
+
+        c.o.forEach(o => { 
+            document.getElementById('opts').innerHTML += `
+            <label class="flex justify-between items-center p-4 bg-black/40 rounded-xl border border-white/5 cursor-pointer hover:border-[#FFD700] transition group">
+                <span class="text-sm font-bold uppercase group-hover:text-[#FFD700] transition">${o.n}</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-gray-500 font-mono text-xs">+${o.p}€</span>
+                    <input type="checkbox" class="chk w-5 h-5 accent-[#FFD700] cursor-pointer" data-p="${o.p}">
+                </div>
+            </label>`; 
+        });
+
+        // Bus Generation
+        let selectionType = null; // 'seat' or 'random'
+        let selectedSeatPrice = 0;
+        const busMap = document.getElementById('bus-map');
+        
+        // Generate 8 rows of 4 seats
+        for(let i=0; i<8; i++) {
+            const row = document.createElement('div');
+            row.className = 'bus-row';
+            
+            // Left pair
+            const s1 = createSeat(i*4 + 1, i<2 ? 15:10);
+            const s2 = createSeat(i*4 + 2, i<2 ? 15:10);
+            // Aisle
+            const aisle = document.createElement('div'); aisle.className = 'bus-aisle';
+            // Right pair
+            const s3 = createSeat(i*4 + 3, i<2 ? 15:10);
+            const s4 = createSeat(i*4 + 4, i<2 ? 15:10);
+
+            row.append(s1, s2, aisle, s3, s4);
+            busMap.appendChild(row);
+        }
+
+        function createSeat(num, price) {
+            const s = document.createElement('div');
+            s.className = 'seat';
+            s.dataset.price = price;
+            s.onclick = () => selectSeat(s, price);
+            return s;
+        }
+
+        function selectSeat(el, price) {
+            document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            
+            selectionType = 'seat';
+            selectedSeatPrice = price;
+            document.getElementById('seat-msg').innerText = `Place sélectionnée (+${price}€)`;
+            document.getElementById('random-seat-btn').classList.remove('bg-[#FFD700]', 'text-black');
+            document.getElementById('random-seat-btn').classList.add('text-[#FFD700]');
+            up();
+        }
+
+        document.getElementById('random-seat-btn').onclick = () => {
+            document.querySelectorAll('.seat').forEach(s => s.classList.remove('selected'));
+            selectionType = 'random';
+            selectedSeatPrice = 0;
+            document.getElementById('seat-msg').innerText = "Place Aléatoire (0€)";
+            
+            // Highlight button
+            const btn = document.getElementById('random-seat-btn');
+            btn.classList.add('bg-[#FFD700]', 'text-black');
+            btn.classList.remove('text-[#FFD700]');
+            up();
+        }
+
+        function up(){ 
+            let t = c.b + selectedSeatPrice; 
+            document.querySelectorAll('.chk:checked').forEach(x => t += parseInt(x.dataset.p)); 
+            document.getElementById('tot').innerText = t + "€"; 
+        }
+
+        document.getElementById('opts').onchange = up; 
+        up();
+
+        document.getElementById('nxt').onclick = () => {
+            if(selectionType === null) {
+                showWarning("Veuillez sélectionner une place ou choisir l'option aléatoire.");
+                return;
+            }
+
+            // LOGIN CHECK
+            const user = localStorage.getItem('xtreme_user');
+            if(!user) {
+                document.getElementById('login-modal').classList.remove('hidden');
+                return;
+            }
+
+            window.location.href = `reserver.html?activite=${act}&total=${document.getElementById('tot').innerText}`;
+        };
+
+        function handleModalLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('m-email').value;
+            if(email) {
+                localStorage.setItem('xtreme_user', JSON.stringify({ email: email, name: 'Membre' }));
+                document.getElementById('login-modal').classList.add('hidden');
+                showSuccess("Connexion réussie ! Vous pouvez maintenant réserver.");
+            }
+        }
+    </script>
+</body>
+
+</html>

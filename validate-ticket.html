@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation QR Code | Xtreme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-2xl w-full">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#FFD700] to-yellow-600 rounded-3xl mb-4 animate-pulse">
+                <svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
+                </svg>
+            </div>
+            <h1 class="text-4xl font-black uppercase italic text-white mb-2">
+                Validation <span class="text-[#FFD700]">QR Code</span>
+            </h1>
+            <p class="text-gray-400 text-sm">Scannez votre billet pour vérifier sa validité</p>
+        </div>
+
+        <!-- Result Card -->
+        <div id="result-card" class="hidden">
+            <!-- Success -->
+            <div id="valid-card" class="bg-gradient-to-br from-green-900/40 to-green-800/20 border-2 border-green-500 rounded-3xl p-8 backdrop-blur-xl hidden">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-green-500 rounded-full mb-4">
+                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-black uppercase text-green-400 mb-2">✅ Billet Valide</h2>
+                    <p class="text-gray-300 text-sm">Ce billet est authentique et actif</p>
+                </div>
+
+                <div class="bg-black/30 border border-green-500/30 rounded-2xl p-6 space-y-4">
+                    <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                        <span class="text-gray-400 text-sm uppercase font-bold">ID Billet</span>
+                        <span id="v-id" class="text-[#FFD700] font-mono font-bold"></span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                        <span class="text-gray-400 text-sm uppercase font-bold">Activité</span>
+                        <span id="v-activity" class="text-white font-bold"></span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                        <span class="text-gray-400 text-sm uppercase font-bold">Date</span>
+                        <span id="v-date" class="text-white font-bold"></span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-white/10 pb-3">
+                        <span class="text-gray-400 text-sm uppercase font-bold">Siège</span>
+                        <span id="v-seat" class="text-white font-bold"></span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400 text-sm uppercase font-bold">Statut</span>
+                        <span class="text-green-400 font-black uppercase text-sm px-4 py-1 bg-green-500/20 rounded-full border border-green-500">CONFIRMÉ</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invalid -->
+            <div id="invalid-card" class="bg-gradient-to-br from-red-900/40 to-red-800/20 border-2 border-red-500 rounded-3xl p-8 backdrop-blur-xl hidden">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-red-500 rounded-full mb-4">
+                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-black uppercase text-red-400 mb-2">❌ Billet Invalide</h2>
+                    <p id="invalid-reason" class="text-gray-300 text-sm"></p>
+                </div>
+
+                <div class="bg-black/30 border border-red-500/30 rounded-2xl p-6">
+                    <p class="text-center text-gray-400 text-sm">
+                        Ce billet a été annulé ou n'existe pas dans notre système.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Form -->
+        <div id="input-form" class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 backdrop-blur-xl">
+            <div class="mb-6">
+                <label class="block text-xs font-bold uppercase text-gray-400 mb-3 tracking-wider">ID du Billet</label>
+                <input 
+                    type="text" 
+                    id="ticket-id" 
+                    placeholder="#TRIP-2026-XXXXX"
+                    class="w-full bg-black/50 border border-white/10 rounded-xl px-6 py-4 text-white font-mono text-lg focus:border-[#FFD700] outline-none transition uppercase"
+                >
+                <p class="text-xs text-gray-600 mt-2">Entrez l'ID du billet fourni dans votre email</p>
+            </div>
+
+            <button 
+                onclick="validateTicket()"
+                class="w-full bg-gradient-to-r from-[#FFD700] to-yellow-500 text-black font-black uppercase py-4 rounded-xl hover:scale-105 transition shadow-[0_0_30px_rgba(255,215,0,0.3)] flex items-center justify-center gap-2"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Valider le Billet
+            </button>
+
+            <button 
+                onclick="window.location.href='index.html'"
+                class="w-full mt-4 border border-white/10 text-gray-400 font-bold uppercase py-3 rounded-xl hover:border-[#FFD700] hover:text-white transition"
+            >
+                ← Retour à l'accueil
+            </button>
+        </div>
+    </div>
+
+    <script>
+        async function validateTicket() {
+            const ticketId = document.getElementById('ticket-id').value.trim().toUpperCase();
+            
+            if (!ticketId) {
+                alert('⚠️ Veuillez entrer un ID de billet');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/validate-ticket', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ticketId })
+                });
+
+                const result = await response.json();
+
+                // Hide form, show result
+                document.getElementById('input-form').classList.add('hidden');
+                document.getElementById('result-card').classList.remove('hidden');
+
+                if (result.valid) {
+                    // Show valid card
+                    document.getElementById('valid-card').classList.remove('hidden');
+                    document.getElementById('invalid-card').classList.add('hidden');
+                    
+                    // Populate data
+                    document.getElementById('v-id').textContent = result.reservation.id;
+                    document.getElementById('v-activity').textContent = result.reservation.activity;
+                    document.getElementById('v-date').textContent = result.reservation.date;
+                    document.getElementById('v-seat').textContent = result.reservation.seat;
+                } else {
+                    // Show invalid card
+                    document.getElementById('invalid-card').classList.remove('hidden');
+                    document.getElementById('valid-card').classList.add('hidden');
+                    
+                    document.getElementById('invalid-reason').textContent = result.reason || 'Ce billet a été annulé ou n\'existe pas.';
+                }
+
+                // Add reset button
+                setTimeout(() => {
+                    const resetBtn = document.createElement('button');
+                    resetBtn.textContent = '← Vérifier un Autre Billet';
+                    resetBtn.className = 'w-full mt-6 border border-white/10 text-gray-400 font-bold uppercase py-3 rounded-xl hover:border-[#FFD700] hover:text-white transition';
+                    resetBtn.onclick = () => location.reload();
+                    document.getElementById('result-card').appendChild(resetBtn);
+                }, 500);
+
+            } catch (error) {
+                alert('❌ Erreur de connexion au serveur');
+                console.error('Erreur:', error);
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('ticket-id').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') validateTicket();
+        });
+    </script>
+</body>
+</html>

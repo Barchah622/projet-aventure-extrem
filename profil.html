@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil | Xtreme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="notifications.css">
+    <script src="notifications.js"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 100%);
+            color: white; 
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, #FFD700, #B8860B); 
+            border-radius: 10px; 
+        }
+
+        .glass-card {
+            background: rgba(20, 20, 20, 0.4);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glass-strong {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(30px) saturate(200%);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .glow-gold { box-shadow: 0 0 40px rgba(255, 215, 0, 0.4); }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+        }
+
+        .float { animation: float 6s ease-in-out infinite; }
+        .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+        .card-interactive {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .card-interactive:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 215, 0, 0.4);
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.2);
+        }
+
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .rotating-border::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: conic-gradient(from 0deg, #FFD700, #FFA500, #FFD700);
+            border-radius: inherit;
+            animation: rotate-border 6s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate-border {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+        
+        .tooltip:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-5px);
+        }
+        
+        .tooltip-content {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid #FFD700;
+            padding: 12px;
+            border-radius: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            width: 250px;
+            z-index: 100;
+        }
+
+        /* Tab Styles */
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        
+        .tab-btn.active {
+            background: #FFD700;
+            color: black;
+        }
+        
+        .tab-btn:not(.active) {
+            color: #666;
+            border-color: #333;
+        }
+        
+        .tab-btn:not(.active):hover {
+            border-color: #FFD700;
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative overflow-x-hidden selection:bg-[#FFD700] selection:text-black">
+
+    <!-- Animated Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px] float"></div>
+        <div class="absolute bottom-[-20%] right-[-10%] w-[700px] h-[700px] bg-[#FFD700]/10 rounded-full blur-[150px] float" style="animation-delay: -3s;"></div>
+        <div class="absolute top-[40%] left-[50%] w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[120px] float" style="animation-delay: -5s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card border-b border-white/10 py-5 px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-black uppercase tracking-tighter italic flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-[#FFD700] to-yellow-600 rounded-lg flex items-center justify-center">
+                    <span class="text-black text-sm">X</span>
+                </div>
+                <span>Xtrem <span class="text-[#FFD700]">OS</span></span>
+            </a>
+            
+            <div class="flex items-center gap-6">
+                <div class="hidden md:flex items-center gap-3 px-4 py-2 glass-card rounded-full">
+                    <div class="w-2 h-2 rounded-full bg-green-500 pulse-glow"></div>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-green-400">Connecté</span>
+                </div>
+                
+                <button onclick="logout()" class="group relative px-6 py-2.5 rounded-full overflow-hidden border border-red-500/50 hover:border-red-500 transition-all">
+                    <div class="absolute inset-0 bg-red-500/10 group-hover:bg-red-500 transition duration-300"></div>
+                    <span class="relative text-[10px] font-bold uppercase tracking-widest text-red-400 group-hover:text-black transition flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        Déconnexion
+                    </span>
+                </button>
+                
+                <div class="w-12 h-12 rounded-full relative rotating-border">
+                    <img id="nav-avatar" src="" class="w-full h-full object-cover rounded-full relative z-10 border-4 border-black">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="pt-32 pb-20 px-6 max-w-7xl mx-auto relative z-10">
+        
+        <!-- Hero Header -->
+        <div class="mb-16 relative">
+            <div class="absolute inset-0 grid-bg opacity-30 rounded-3xl"></div>
+            <div class="glass-strong rounded-3xl p-8 md:p-12 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-[#FFD700]/10 rounded-full blur-3xl"></div>
+                
+                <div class="relative z-10">
+                    <p class="text-gray-500 text-xs font-mono mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"></path></svg>
+                        <span>USER_ID: <span id="uid-disp" class="text-[#FFD700]">#X-5143</span></span>
+                    </p>
+                    <h1 class="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-none mb-2">
+                        Bienvenue <br>
+                        <span class="text-white" id="welcome-name">Agent</span>
+                    </h1>
+                    <p class="text-gray-400 text-sm mt-4 max-w-md">Gérez vos réservations, consultez vos statistiques et préparez votre prochaine aventure extrême.</p>
+                    
+                    <!-- Rank & XP System -->
+                    <div class="mt-8 max-w-2xl">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div id="rank-icon" class="text-4xl">⭐</div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-black uppercase tracking-widest text-[#FFD700] flex items-center gap-2">
+                                        <span id="rank-name">Rang: Elite</span>
+                                        <button class="tooltip">
+                                            <svg class="w-4 h-4 text-gray-500 hover:text-[#FFD700] transition" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                            <div class="tooltip-content text-xs">
+                                                <p class="font-bold text-[#FFD700] mb-2">Système de Niveaux</p>
+                                                <p class="text-gray-300 mb-2">Gagnez de l'XP à chaque réservation !</p>
+                                                <div class="space-y-1 text-[10px]">
+                                                    <p>🟤 Novice 1-3: 0-2250 XP</p>
+                                                    <p>🟫 Bronze 1-3: 2250-6750 XP</p>
+                                                    <p>⚪ Silver 1-3: 6750-15000 XP</p>
+                                                    <p>🟡 Gold 1-3: 15000-30000 XP</p>
+                                                    <p>🔵 Platinum 1-3: 30000-55000 XP</p>
+                                                    <p>💎 Diamond 1-3: 55000+ XP</p>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </span>
+                                    <span class="text-gray-400 text-xs"><span id="current-xp">2450</span> / <span id="max-xp">3000</span> XP</span>
+                                </div>
+                                <div class="h-3 w-full bg-black/50 rounded-full overflow-hidden border border-white/10">
+                                    <div id="xp-bar" class="h-full bg-[#FFD700] glow-gold transition-all duration-500" style="width: 82%"></div>
+                                </div>
+                                <p class="text-[10px] text-gray-500 mt-2 text-right"><span id="xp-remaining">550</span> XP restants pour le niveau suivant</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div class="glass-card rounded-2xl p-6 card-interactive text-center">
+                <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                </div>
+                <p class="text-3xl font-black" id="total-reservations">0</p>
+                <p class="text-[10px] uppercase text-gray-500 font-bold mt-1">Réservations</p>
+            </div>
+            
+            <div class="glass-card rounded-2xl p-6 card-interactive text-center">
+                <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <p class="text-3xl font-black text-green-400" id="confirmed-reservations">100%</p>
+                <p class="text-[10px] uppercase text-gray-500 font-bold mt-1">Confirmées</p>
+            </div>
+            
+            <div class="glass-card rounded-2xl p-6 card-interactive text-center">
+                <div class="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <p class="text-3xl font-black text-red-400" id="history-count">0</p>
+                <p class="text-[10px] uppercase text-gray-500 font-bold mt-1">Historique</p>
+            </div>
+            
+            <div class="glass-card rounded-2xl p-6 card-interactive text-center">
+                <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <p class="text-3xl font-black text-yellow-400" id="next-adventure">Soon</p>
+                <p class="text-[10px] uppercase text-gray-500 font-bold mt-1">Prochaine</p>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Profile Card -->
+            <div class="lg:col-span-1">
+                <div class="glass-strong rounded-3xl p-8 card-interactive relative overflow-hidden">
+                    <div class="absolute inset-0 grid-bg opacity-20"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-6">
+                            <h3 class="text-xs font-black uppercase tracking-widest text-[#FFD700]">Profil Agent</h3>
+                            <button onclick="toggleEdit()" class="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#FFD700] transition group">
+                                <svg class="w-5 h-5 text-[#FFD700] group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </button>
+                        </div>
+
+                        <div class="mb-8 text-center">
+                            <div class="w-32 h-32 rounded-3xl overflow-hidden border-4 border-[#FFD700] glow-gold mx-auto mb-4 relative rotating-border">
+                                <img id="main-avatar" src="" class="w-full h-full object-cover relative z-10">
+                            </div>
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-2 block">Prénom</label>
+                                <input id="p-fn" type="text" disabled class="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-xl font-black uppercase italic outline-none focus:border-[#FFD700] transition disabled:cursor-not-allowed">
+                            </div>
+                            
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-2 block">Nom</label>
+                                <input id="p-ln" type="text" disabled class="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-lg font-bold uppercase outline-none focus:border-[#FFD700] transition disabled:cursor-not-allowed">
+                            </div>
+                            
+                            <div>
+                                <label class="text-[10px] uppercase font-bold text-gray-500 tracking-widest mb-2 block">Email</label>
+                                <input id="p-email" type="email" disabled class="w-full bg-black/50 border border-white/10 rounded-xl p-4 text-sm font-mono text-gray-400 outline-none focus:border-[#FFD700] transition disabled:cursor-not-allowed">
+                            </div>
+                        </div>
+
+                        <button id="save-btn" onclick="saveProfile()" class="hidden w-full mt-6 py-4 bg-gradient-to-r from-[#FFD700] to-yellow-500 text-black font-black uppercase tracking-widest rounded-xl hover:scale-105 transition shadow-[0_0_30px_rgba(255,215,0,0.4)]">
+                            Sauvegarder
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- Reservations avec Tabs -->
+                <div class="glass-strong rounded-3xl p-8 relative overflow-hidden">
+                    <div class="absolute inset-0 grid-bg opacity-10"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                            <div>
+                                <h3 class="text-xl font-black uppercase tracking-tight text-white mb-1">Mes Réservations</h3>
+                                <p class="text-xs text-gray-500">Gérez vos aventures</p>
+                            </div>
+                            
+                            <!-- Tabs -->
+                            <div class="flex gap-2">
+                                <button class="tab-btn active" onclick="switchTab('active', this)">Actives (<span id="active-count">0</span>)</button>
+                                <button class="tab-btn" onclick="switchTab('history', this)">Historique (<span id="history-tab-count">0</span>)</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Active Reservations -->
+                        <div id="active-reservations" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                            <div class="text-center py-16 text-gray-500">
+                                <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                    <svg class="w-10 h-10 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                </div>
+                                <p class="text-sm font-bold uppercase mb-2">Aucune réservation active</p>
+                                <p class="text-xs text-gray-600 mb-6">Commencez votre aventure maintenant</p>
+                                <a href="index.html" class="inline-flex items-center gap-2 text-[#FFD700] text-xs font-bold uppercase hover:underline">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                                    Explorer les activités
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- History Reservations -->
+                        <div id="history-reservations" class="hidden space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                            <div class="text-center py-16 text-gray-500">
+                                <p class="text-sm font-bold uppercase">Aucun historique</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Chart -->
+                <div class="glass-card rounded-3xl p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-black uppercase tracking-tight text-[#FFD700]">Niveau d'Adrénaline</h3>
+                        <div class="flex gap-2 items-center">
+                            <span class="w-2 h-2 bg-green-500 rounded-full pulse-glow"></span>
+                            <span class="text-[10px] text-green-500 font-mono">LIVE</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Chart Period Selector -->
+                    <div class="flex gap-2 mb-6 flex-wrap">
+                        <button class="tab-btn active" onclick="updateChart('week')">Semaine</button>
+                        <button class="tab-btn" onclick="updateChart('month')">Mois</button>
+                        <button class="tab-btn" onclick="updateChart('year')">Année</button>
+                        <button class="tab-btn" onclick="updateChart('all')">Tout</button>
+                    </div>
+                    
+                    <div class="h-64">
+                        <canvas id="adrenalineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logout-modal" class="fixed inset-0 z-[60] hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-strong border-red-500/30 p-10 rounded-3xl max-w-md w-full text-center shadow-[0_0_80px_rgba(220,38,38,0.3)]">
+            <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <h3 class="text-3xl font-black uppercase italic mb-3 text-red-500">Déconnexion</h3>
+            <p class="text-gray-400 text-sm mb-8">Êtes-vous sûr de vouloir quitter votre session ?</p>
+            <div class="flex gap-4">
+                <button onclick="confirmLogout()" class="flex-1 bg-red-600 text-white font-black uppercase py-4 rounded-xl hover:bg-red-500 transition">Confirmer</button>
+                <button onclick="closeLogout()" class="flex-1 bg-zinc-800 text-gray-400 font-bold uppercase py-4 rounded-xl hover:bg-zinc-700 hover:text-white transition">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Rank System Configuration
+        const RANK_SYSTEM = [
+            { name: 'Novice 3', icon: '🟤', min: 0, max: 750, color: '#8B4513' },
+            { name: 'Novice 2', icon: '🟤', min: 750, max: 1500, color: '#A0522D' },
+            { name: 'Novice 1', icon: '🟤', min: 1500, max: 2250, color: '#CD853F' },
+            { name: 'Bronze 3', icon: '🟫', min: 2250, max: 3375, color: '#CD7F32' },
+            { name: 'Bronze 2', icon: '🟫', min: 3375, max: 5063, color: '#D2691E' },
+            { name: 'Bronze 1', icon: '🟫', min: 5063, max: 6750, color: '#FF8C00' },
+            { name: 'Silver 3', icon: '⚪', min: 6750, max: 9375, color: '#C0C0C0' },
+            { name: 'Silver 2', icon: '⚪', min: 9375, max: 12188, color: '#D3D3D3' },
+            { name: 'Silver 1', icon: '⚪', min: 12188, max: 15000, color: '#E8E8E8' },
+            { name: 'Gold 3', icon: '🟡', min: 15000, max: 20000, color: '#FFD700' },
+            { name: 'Gold 2', icon: '🟡', min: 20000, max: 25000, color: '#FFA500' },
+            { name: 'Gold 1', icon: '🟡', min: 25000, max: 30000, color: '#FF8C00' },
+            { name: 'Platinum 3', icon: '🔵', min: 30000, max: 38750, color: '#00CED1' },
+            { name: 'Platinum 2', icon: '🔵', min: 38750, max: 46875, color: '#1E90FF' },
+            { name: 'Platinum 1', icon: '🔵', min: 46875, max: 55000, color: '#4169E1' },
+            { name: 'Diamond 3', icon: '💎', min: 55000, max: 70000, color: '#00FFFF' },
+            { name: 'Diamond 2', icon: '💎', min: 70000, max: 85000, color: '#7FFFD4' },
+            { name: 'Diamond 1', icon: '💎', min: 85000, max: 999999, color: '#B0E0E6' }
+        ];
+
+        // XP System Configuration
+        const BASE_XP_RESERVATION = 30;  // XP de base pour une réservation
+        const BASE_XP_CANCELLATION = 15; // XP de base pour une annulation
+
+        // Fonction pour calculer le niveau actuel (0-17)
+        function getCurrentLevel(xp) {
+            return RANK_SYSTEM.findIndex(r => xp >= r.min && xp < r.max);
+        }
+
+        // Fonction pour calculer les XP avec multiplicateur de niveau
+        function calculateXP(baseXP, currentXP) {
+            const level = getCurrentLevel(currentXP);
+            // Chaque niveau augmente de 25% (multiplicateur = 1 + 0.25 * niveau)
+            const multiplier = 1 + (0.25 * level);
+            return Math.round(baseXP * multiplier);
+        }
+
+        // Fonction pour obtenir le gain XP d'une réservation
+        function getReservationXP(currentXP) {
+            return calculateXP(BASE_XP_RESERVATION, currentXP);
+        }
+
+        // Fonction pour obtenir la perte XP d'une annulation
+        function getCancellationXP(currentXP) {
+            return calculateXP(BASE_XP_CANCELLATION, currentXP);
+        }
+
+        // Fonction de relégation : ajuste les XP si l'utilisateur descend sous le minimum de son rang
+        function handleDemotion(newXP) {
+            if (newXP < 0) newXP = 0; // Ne jamais aller en négatif
+            
+            // Trouver le rang actuel basé sur les nouveaux XP
+            const currentRank = RANK_SYSTEM.find(r => newXP >= r.min && newXP < r.max);
+            
+            if (!currentRank) {
+                // Si aucun rang trouvé, rester au dernier rang
+                return newXP;
+            }
+            
+            // Vérifier si on est descendu en dessous du minimum du rang
+            // (Cela ne devrait normalement pas arriver avec la logique find ci-dessus,
+            // mais on garde la vérification pour la sécurité)
+            if (newXP < currentRank.min) {
+                // Trouver le rang précédent (relégation)
+                const currentIndex = RANK_SYSTEM.indexOf(currentRank);
+                if (currentIndex > 0) {
+                    const lowerRank = RANK_SYSTEM[currentIndex - 1];
+                    console.log(`📉 Relégation: ${currentRank.name} → ${lowerRank.name}`);
+                    
+                    // Option 1: Rester au minimum du rang actuel
+                    // return currentRank.min;
+                    
+                    // Option 2: Garder les XP réels (recommandé)
+                    return newXP;
+                } else {
+                    // On est déjà au rang le plus bas (Novice 3), ne pas descendre plus
+                    console.log('🛑 Rang minimum atteint (Novice 3), XP maintenu à', newXP);
+                    return Math.max(0, newXP); // Au minimum 0 XP
+                }
+            }
+            
+            return newXP;
+        }
+
+        // Fonction pour appliquer une perte d'XP avec gestion de relégation
+        function applyXPLoss(currentXP, xpLoss) {
+            const newXP = currentXP - xpLoss;
+            const adjustedXP = handleDemotion(newXP);
+            
+            // Afficher un message si relégation
+            const oldRank = RANK_SYSTEM.find(r => currentXP >= r.min && currentXP < r.max);
+            const newRank = RANK_SYSTEM.find(r => adjustedXP >= r.min && adjustedXP < r.max);
+            
+            if (oldRank && newRank && oldRank.name !== newRank.name) {
+                console.log(`📉 RELÉGATION: ${oldRank.name} → ${newRank.name}`);
+                if (typeof showWarning === 'function') {
+                    showWarning(`📉 Vous avez été relégué de ${oldRank.name} à ${newRank.name} !`, 5000);
+                }
+            }
+            
+            return Math.max(0, adjustedXP);
+        }
+
+        // Security Check & Data Load
+        const user = JSON.parse(localStorage.getItem('xtreme_user'));
+        if (!user) window.location.href = 'index.html';
+
+        // ======= SYSTÈME DE SYNCHRONISATION =======
+
+        // 1. PUSH (Envoyer les modifs locales vers le serveur) - À appeler uniquement après une modification explicite
+        async function pushUserToServer() {
+            try {
+                // S'assurer qu'on n'envoie pas de données vides
+                if (!user.name) return;
+
+                const response = await fetch('http://localhost:3000/api/sync-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user)
+                });
+                
+                const result = await response.json();
+                if(result.success) {
+                    console.log("✅ Données SAUVEGARDÉES sur le serveur");
+                }
+            } catch (error) {
+                console.error("Erreur sauvegarde:", error);
+            }
+        }
+
+        // 2. FETCH (Récupérer la vérité terrain du serveur) - À appeler au chargement
+        async function fetchUserFromServer() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/user?email=${user.email}`);
+                const result = await response.json();
+                
+                if (result.success && result.user) {
+                    const serverUser = result.user;
+                    
+                    // Vérifier si le serveur a des données plus fraîches ou complètes
+                    // (Simplification: On fait confiance au serveur pour les données critiques)
+                    if (serverUser.xp !== user.xp || serverUser.reservations.length !== user.reservations.length) {
+                        console.log("📥 Données serveur récupérées (Mise à jour locale)");
+                        Object.assign(user, serverUser); // Mettre à jour l'objet user en mémoire
+                        localStorage.setItem('xtreme_user', JSON.stringify(user));
+                        
+                        // Rafraîchir l'interface
+                        updateUI();
+                    } else {
+                        console.log("✅ Données locales à jour");
+                    }
+                }
+            } catch (error) {
+                console.error("Erreur récupération serveur:", error);
+            }
+        }
+
+        // Fonction utilitaire pour tout rafraîchir
+        function updateUI() {
+            // Mettre à jour les champs
+            document.getElementById('p-fn').value = user.name || '';
+            document.getElementById('p-ln').value = user.lastName || '';
+            document.getElementById('welcome-name').innerText = user.name || "Agent";
+            document.querySelector('#nav-avatar').src = user.profilePic || "https://randomuser.me/api/portraits/men/32.jpg";
+            document.querySelector('#main-avatar').src = user.profilePic || "https://randomuser.me/api/portraits/men/32.jpg";
+            
+            // Recalculer
+            recalculateXPFromReservations();
+            updateRankDisplay();
+            loadReservations();
+        }
+        
+        // Initial Fetch au chargement
+        fetchUserFromServer();
+
+        // Initialize XP if not exists
+        if (!user.xp) user.xp = 0;
+
+        // Populate UI
+        const avatar = user.profilePic || "https://randomuser.me/api/portraits/men/32.jpg";
+        document.querySelector('#nav-avatar').src = avatar;
+        document.querySelector('#main-avatar').src = avatar;
+        document.getElementById('p-fn').value = user.name || '';
+        document.getElementById('p-ln').value = user.lastName || '';
+        document.getElementById('p-email').value = user.email || '';
+        document.getElementById('welcome-name').innerText = user.name || "Agent";
+        document.getElementById('uid-disp').innerText = "#X-" + Math.floor(Math.random() * 90000);
+
+        // Recalculate XP from existing reservations (retroactive fix)
+        function recalculateXPFromReservations() {
+            if (!user.reservations || user.reservations.length === 0) return;
+            
+            // Si l'utilisateur a des réservations mais 0 XP, recalculer
+            if (user.xp === 0 && user.reservations.length > 0) {
+                console.log('🔄 Recalcul rétroactif des XP...');
+                let totalXP = 0;
+                
+                // Pour chaque réservation, calculer les XP comme si on les faisait une par une
+                user.reservations.forEach((res, index) => {
+                    const xpGain = getReservationXP(totalXP);
+                    totalXP += xpGain;
+                    console.log(`  Réservation ${index + 1}: +${xpGain} XP (Total: ${totalXP})`);
+                });
+                
+                user.xp = totalXP;
+                localStorage.setItem('xtreme_user', JSON.stringify(user));
+                console.log(`✅ XP recalculé: ${totalXP} XP pour ${user.reservations.length} réservations`);
+                
+                // Afficher une notification
+                showSuccess(`🎉 XP recalculé ! Vous avez maintenant ${totalXP} XP pour vos ${user.reservations.length} réservations !`, 5000);
+            }
+        }
+        
+        // Exécuter le recalcul
+        recalculateXPFromReservations();
+
+        // --- PROFILE EDITING ---
+        function toggleEdit() {
+            const inputs = document.querySelectorAll('#p-fn, #p-ln'); 
+            const btn = document.getElementById('save-btn');
+            const isEditing = !btn.classList.contains('hidden');
+
+            if (isEditing) {
+                // Cancel/Save executed, disable inputs
+                inputs.forEach(input => {
+                    input.disabled = true;
+                    input.classList.remove('border-[#FFD700]');
+                });
+                btn.classList.add('hidden');
+                // Reload values in case of cancel (simple logic)
+                document.getElementById('p-fn').value = user.name || '';
+                document.getElementById('p-ln').value = user.lastName || '';
+            } else {
+                // Enable inputs
+                inputs.forEach(input => {
+                    input.disabled = false;
+                    input.classList.add('border-[#FFD700]');
+                });
+                btn.classList.remove('hidden');
+            }
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('p-fn').value;
+            const newLast = document.getElementById('p-ln').value;
+            
+            if(newName) {
+                user.name = newName;
+                user.lastName = newLast;
+                localStorage.setItem('xtreme_user', JSON.stringify(user));
+                
+                // Update UI immediately
+                document.getElementById('welcome-name').innerText = user.name;
+                
+                // Disable inputs again (manually call logic to avoid reset)
+                const inputs = document.querySelectorAll('#p-fn, #p-ln'); 
+                const btn = document.getElementById('save-btn');
+                inputs.forEach(input => {
+                    input.disabled = true;
+                    input.classList.remove('border-[#FFD700]');
+                });
+                btn.classList.add('hidden');
+
+                showSuccess("Profil mis à jour et sauvegardé !");
+            }
+        }
+
+        // Update Rank System
+        function updateRankDisplay() {
+            const xp = user.xp || 0;
+            const rank = RANK_SYSTEM.find(r => xp >= r.min && xp < r.max) || RANK_SYSTEM[RANK_SYSTEM.length - 1];
+            
+            document.getElementById('rank-icon').textContent = rank.icon;
+            document.getElementById('rank-name').textContent = 'Rang: ' + rank.name;
+            document.getElementById('current-xp').textContent = xp;
+            document.getElementById('max-xp').textContent = rank.max;
+            document.getElementById('xp-remaining').textContent = rank.max - xp;
+            
+            const percentage = ((xp - rank.min) / (rank.max - rank.min)) * 100;
+            document.getElementById('xp-bar').style.width = percentage + '%';
+        }
+        
+        updateRankDisplay();
+
+        // Tab Switching
+        let currentTab = 'active';
+        function switchTab(tab, btnElement) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+            
+            if (tab === 'active') {
+                document.getElementById('active-reservations').classList.remove('hidden');
+                document.getElementById('history-reservations').classList.add('hidden');
+            } else {
+                document.getElementById('active-reservations').classList.add('hidden');
+                document.getElementById('history-reservations').classList.remove('hidden');
+            }
+        }
+
+        // Load Reservations
+        function loadReservations() {
+            const reservations = user.reservations || [];
+            const now = new Date();
+            
+            // Separate active and history
+            const active = reservations.filter(r => {
+                const resDate = parseReservationDate(r.date);
+                return resDate >= now;
+            });
+            
+            const history = reservations.filter(r => {
+                const resDate = parseReservationDate(r.date);
+                return resDate < now;
+            });
+            
+            // Update stats
+            document.getElementById('total-reservations').textContent = reservations.length;
+            document.getElementById('active-count').textContent = active.length;
+            document.getElementById('history-tab-count').textContent = history.length;
+            document.getElementById('history-count').textContent = history.length;
+            
+            if (active.length > 0) {
+                const nextRes = active[0];
+                const dateStr = nextRes.date.split(' ');
+                document.getElementById('next-adventure').textContent = dateStr[0] + ' ' + dateStr[1];
+            }
+            
+            const confirmedPercent = reservations.length > 0 ? 
+                Math.round((active.length / reservations.length) * 100) : 0;
+            document.getElementById('confirmed-reservations').textContent = confirmedPercent + '%';
+            
+            // Render active reservations
+            renderReservations(active, 'active-reservations', true);
+            
+            // Render history
+            renderReservations(history, 'history-reservations', false);
+        }
+        
+        function parseReservationDate(dateStr) {
+            // Parse "20 Mars 2026"
+            const months = {
+                'Janvier': 0, 'Février': 1, 'Mars': 2, 'Avril': 3, 'Mai': 4, 'Juin': 5,
+                'Juillet': 6, 'Août': 7, 'Septembre': 8, 'Octobre': 9, 'Novembre': 10, 'Décembre': 11
+            };
+            
+            const parts = dateStr.split(' ');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0]);
+                const month = months[parts[1]];
+                const year = parseInt(parts[2]);
+                return new Date(year, month, day);
+            }
+            return new Date();
+        }
+        
+        function canCancelReservation(dateStr) {
+            const resDate = parseReservationDate(dateStr);
+            const now = new Date();
+            const diffTime = resDate - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays > 10;
+        }
+        
+        function getDaysUntil(dateStr) {
+            const resDate = parseReservationDate(dateStr);
+            const now = new Date();
+            const diffTime = resDate - now;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+        
+        function renderReservations(reservations, containerId, isActive) {
+            const container = document.getElementById(containerId);
+            
+            if (reservations.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-gray-500">
+                        <div class="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-10 h-10 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold uppercase mb-2">${isActive ? 'Aucune réservation active' : 'Aucun historique'}</p>
+                        ${isActive ? `<p class="text-xs text-gray-600 mb-6">Commencez votre aventure maintenant</p>
+                        <a href="index.html" class="inline-flex items-center gap-2 text-[#FFD700] text-xs font-bold uppercase hover:underline">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                            Explorer les activités
+                        </a>` : ''}
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = [...reservations].reverse().map((res, index) => {
+                const canCancel = isActive && canCancelReservation(res.date);
+                const daysUntil = getDaysUntil(res.date);
+                
+                return `
+                <div class="glass-card rounded-2xl p-6 card-interactive group relative overflow-hidden border-l-4 ${isActive ? 'border-[#FFD700]' : 'border-gray-600'}">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#FFD700]/10 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex-1">
+                                <h4 class="font-black uppercase italic text-2xl text-white group-hover:text-[#FFD700] transition mb-1">${res.activity}</h4>
+                                <p class="text-[10px] text-gray-500 font-mono flex items-center gap-2">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
+                                    ${res.id}
+                                </p>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="text-xs ${isActive ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-gray-500/20 text-gray-400 border-gray-500/30'} px-4 py-1.5 rounded-full font-bold uppercase border">
+                                    ${res.status}
+                                </span>
+                                <span class="text-2xl font-black text-[#FFD700]">${res.price}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <div class="glass-card p-3 rounded-xl">
+                                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Date</p>
+                                <p class="text-sm text-white font-bold">${res.date}</p>
+                            </div>
+                            <div class="glass-card p-3 rounded-xl">
+                                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Heure</p>
+                                <p class="text-sm text-white font-bold">${res.time}</p>
+                            </div>
+                            <div class="glass-card p-3 rounded-xl">
+                                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Siège</p>
+                                <p class="text-sm text-[#FFD700] font-bold">${res.seat}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center pt-4 border-t border-white/10">
+                            <p class="text-[9px] text-gray-600 font-mono">Réservé le ${new Date(res.bookedAt).toLocaleDateString('fr-FR')}</p>
+                            <button onclick="viewTicket('${res.id}')" class="text-[10px] text-[#FFD700] font-bold uppercase hover:underline flex items-center gap-1">
+                                Voir le billet
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                            </button>
+                        </div>
+                        
+                        ${canCancel ? `
+                        <div class="mt-4 pt-4 border-t border-white/10">
+                            <button onclick="cancelReservation('${res.id}')" class="w-full bg-red-600 text-white font-bold uppercase py-3 rounded-xl hover:bg-red-500 transition flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                Annuler la réservation
+                                <span class="text-xs opacity-75">(⏱️ ${daysUntil} jours)</span>
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `}).join('');
+        }
+        
+        function viewTicket(ticketId) {
+            showInfo('Votre billet ' + ticketId + ' a été envoyé par email lors de la réservation.<br><br>Vérifiez votre boîte de réception.', 7000);
+        }
+        
+        async function cancelReservation(ticketId) {
+            // Calculer XP Loss Dynamique
+            const xpLoss = getCancellationXP(user.xp || 0);
+
+            if (confirm(`⚠️ Êtes-vous sûr de vouloir annuler cette réservation ?\n\n❌ Pénalité : -${xpLoss} XP\n🚫 QR Code INVALIDÉ`)) {
+                
+                const index = user.reservations.findIndex(r => r.id === ticketId);
+                
+                if (index > -1) {
+                    const reservation = user.reservations[index];
+
+                    // 1. Appliquer la Déduction XP avec Relégation
+                    if (typeof applyXPLoss === 'function') {
+                        user.xp = applyXPLoss(user.xp || 0, xpLoss);
+                    } else {
+                        user.xp = Math.max(0, (user.xp || 0) - xpLoss);
+                    }
+                    
+                    // 2. Marquer la réservation comme annulée
+                    reservation.qrCode = null;
+                    reservation.status = 'Annulé';
+                    
+                    // 3. Retirer de la liste
+                    user.reservations.splice(index, 1);
+                    localStorage.setItem('xtreme_user', JSON.stringify(user));
+
+                    // 4. INVALIDER LE QR CODE (DB TICKETS)
+                    try {
+                        const cancelResponse = await fetch('http://localhost:3000/api/cancel-ticket', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ ticketId: ticketId })
+                        });
+                    } catch (err) {
+                        console.error('Erreur invalidation QR:', err);
+                    }
+                    
+                    // 5. ENVOYER EMAIL D'ANNULATION
+                    try {
+                        const response = await fetch('http://localhost:3000/api/cancel-reservation', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                email: user.email,
+                                reservation: reservation,
+                                userName: user.name,
+                                xpLoss: xpLoss
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        if (result.success) {
+                            showSuccess(`✅ Réservation annulée !<br>📧 Email envoyé<br>💔 -${xpLoss} XP`, 6000);
+                        } else {
+                            showWarning('Réservation annulée, email non envoyé.');
+                        }
+                    } catch (error) {
+                        console.error('Erreur email:', error);
+                        showWarning('Erreur serveur lors de l\'envoi de l\'email.');
+                    }
+                    
+                    // 6. SYNCHRONISER AVEC LE SERVEUR
+                    await pushUserToServer();
+                    
+                    // 7. Mettre à jour l'affichage
+                    updateRankDisplay();
+                    loadReservations();
+                }
+            }
+        }
+        
+        loadReservations();
+
+        // Chart.js with dynamic data
+        let chartInstance = null;
+        let currentPeriod = 'week';
+        
+        function updateChart(period) {
+            currentPeriod = period;
+            document.querySelectorAll('#adrenalineChart').forEach(el => {
+                el.closest('.glass-card').querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            });
+            event.target.classList.add('active');
+            
+            renderChart();
+        }
+        
+        function renderChart() {
+            const reservations = user.reservations || [];
+            let labels = [];
+            let data = [];
+            
+            // Si aucune réservation, afficher des valeurs nulles
+            if (reservations.length === 0) {
+                if (currentPeriod === 'week') {
+                    labels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+                    data = [0, 0, 0, 0, 0, 0, 0];
+                } else if (currentPeriod === 'month') {
+                    labels = ['S1', 'S2', 'S3', 'S4'];
+                    data = [0, 0, 0, 0];
+                } else if (currentPeriod === 'year') {
+                    labels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+                    data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                } else {
+                    labels = ['2024', '2025', '2026'];
+                    data = [0, 0, 0];
+                }
+            } else {
+                // Calculer les données réelles basées sur les réservations
+                const now = new Date();
+                
+                if (currentPeriod === 'week') {
+                    labels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+                    data = [0, 0, 0, 0, 0, 0, 0];
+                    
+                    // Compter les réservations de cette semaine
+                    const startOfWeek = new Date(now);
+                    startOfWeek.setDate(now.getDate() - now.getDay() + 1); // Lundi
+                    
+                    reservations.forEach(res => {
+                        const resDate = parseReservationDate(res.date);
+                        const diffDays = Math.floor((resDate - startOfWeek) / (1000 * 60 * 60 * 24));
+                        if (diffDays >= 0 && diffDays < 7) {
+                            data[diffDays] += 1;
+                        }
+                    });
+                    
+                } else if (currentPeriod === 'month') {
+                    labels = ['S1', 'S2', 'S3', 'S4'];
+                    data = [0, 0, 0, 0];
+                    
+                    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    
+                    reservations.forEach(res => {
+                        const resDate = parseReservationDate(res.date);
+                        if (resDate.getMonth() === now.getMonth() && resDate.getFullYear() === now.getFullYear()) {
+                            const weekNum = Math.floor((resDate.getDate() - 1) / 7);
+                            if (weekNum < 4) {
+                                data[weekNum] += 1;
+                            }
+                        }
+                    });
+                    
+                } else if (currentPeriod === 'year') {
+                    labels = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+                    data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                    
+                    reservations.forEach(res => {
+                        const resDate = parseReservationDate(res.date);
+                        if (resDate.getFullYear() === now.getFullYear()) {
+                            data[resDate.getMonth()] += 1;
+                        }
+                    });
+                    
+                } else { // 'all' - plusieurs années
+                    // Trouver la plage d'années des réservations
+                    const years = reservations.map(r => parseReservationDate(r.date).getFullYear());
+                    const minYear = Math.min(...years, now.getFullYear() - 1);
+                    const maxYear = Math.max(...years, now.getFullYear());
+                    
+                    labels = [];
+                    data = [];
+                    
+                    for (let year = minYear; year <= maxYear; year++) {
+                        labels.push(year.toString());
+                        const count = reservations.filter(r => 
+                            parseReservationDate(r.date).getFullYear() === year
+                        ).length;
+                        data.push(count);
+                    }
+                }
+            }
+            
+            const ctx = document.getElementById('adrenalineChart').getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.4)');
+            gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+
+            if (chartInstance) chartInstance.destroy();
+            
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Adrénaline',
+                        data: data,
+                        borderColor: '#FFD700',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointBackgroundColor: '#000',
+                        pointBorderColor: '#FFD700',
+                        pointBorderWidth: 3,
+                        pointRadius: 6,
+                        pointHoverRadius: 10,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#FFD700',
+                            bodyColor: '#fff',
+                            borderColor: '#FFD700',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            grid: { display: false }, 
+                            ticks: { color: '#666', font: { family: 'Inter', weight: 'bold' } } 
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255, 215, 0, 0.1)' },
+                            ticks: { color: '#666', font: { family: 'Inter' } }
+                        }
+                    },
+                    interaction: { intersect: false, mode: 'index' }
+                }
+            });
+        }
+        
+        renderChart();
+
+
+
+        // Logout
+        function logout() { document.getElementById('logout-modal').classList.remove('hidden'); }
+        function confirmLogout() {
+            localStorage.removeItem("xtreme_user");
+            window.location.href = "index.html";
+        }
+        function closeLogout() { document.getElementById('logout-modal').classList.add('hidden'); }
+    </script>
+</body>
+</html>

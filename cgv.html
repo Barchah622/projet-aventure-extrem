@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGV | Aventure Xtreme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #000; }
+        .text-gold { color: #FFD700; }
+        .border-gold { border-color: #FFD700; }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="border-b border-white/10 py-6 px-6">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-xl font-black uppercase tracking-tighter italic">L'AVENTURE <span class="text-gold">XTREME</span></a>
+           
+            <script>
+                function goBack() {
+                    // Si l'historique permet de revenir en arrière
+                    if (window.history.length > 1) {
+                        window.history.back();
+                    } else {
+                        // Sinon (cas d'ouverture dans un nouvel onglet), on ferme
+                        window.close();
+                        // Fallback si la fermeture est bloquée par le navigateur
+                        setTimeout(() => window.location.href = 'index.html', 500);
+                    }
+                }
+            </script>
+        </div>
+    </nav>
+
+    <div class="max-w-3xl mx-auto py-12 px-6">
+        <h1 class="text-3xl md:text-5xl font-black uppercase italic mb-8 tracking-tighter">Conditions Générales <span class="text-gold">de Vente</span></h1>
+        
+        <div class="space-y-8 text-gray-400 font-light text-sm leading-relaxed">
+            <section>
+                <h2 class="text-white font-bold uppercase tracking-widest mb-2">1. Objet</h2>
+                <p>Les présentes CGV régissent les relations contractuelles entre L'Aventure Xtreme et ses clients pour la vente d'expériences exclusives.</p>
+            </section>
+
+            <section>
+                <h2 class="text-white font-bold uppercase tracking-widest mb-2">2. Réservation et Paiement</h2>
+                <p>Toute réservation est ferme et définitive après réception du paiement intégral. Le client reconnaît avoir la capacité juridique de contracter.</p>
+            </section>
+
+            <section>
+                <h2 class="text-white font-bold uppercase tracking-widest mb-2">3. Sécurité et Responsabilité</h2>
+                <p>Les activités proposées (course, saut, survie) comportent des risques. Le client déclare être en bonne condition physique. L'Aventure Xtreme décline toute responsabilité en cas de non-respect des consignes de sécurité.</p>
+            </section>
+
+            <section>
+                <h2 class="text-white font-bold uppercase tracking-widest mb-2">4. Annulation & Verrouillage (Règle des 10 Jours)</h2>
+                <p>La réservation est modifiable ou annulable sans frais jusqu'à <strong>10 jours avant la date de l'événement</strong>. Passé ce délai, le système verrouille automatiquement les listes passagers : aucune annulation ni remboursement n'est possible.</p>
+            </section>
+
+            <section>
+                <h2 class="text-white font-bold uppercase tracking-widest mb-2">5. Données Personnelles</h2>
+                <p>Vos données sont protégées et cryptées (AES-256). Elles ne sont utilisées que pour l'organisation de votre expérience.</p>
+            </section>
+        </div>
+        
+        <div class="mt-12 pt-8 border-t border-white/10 text-center">
+            <p class="text-[10px] uppercase tracking-widest text-gray-600">Dernière mise à jour : Février 2026</p>
+        </div>
+    </div>
+
+</body>
+</html>

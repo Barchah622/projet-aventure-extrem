@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Email - Diagnostic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex items-center justify-center p-6">
+    <div class="max-w-2xl w-full">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-8">
+            <h1 class="text-3xl font-black uppercase mb-2 text-[#FFD700]">🔧 Diagnostic Email</h1>
+            <p class="text-gray-400 text-sm mb-8">Testez l'envoi d'emails et vérifiez la configuration</p>
+            
+            <div class="space-y-6">
+                <!-- Status du Serveur -->
+                <div id="server-status" class="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
+                    <h3 class="text-xs font-bold uppercase text-gray-400 mb-2">Statut Serveur</h3>
+                    <p id="status-text" class="text-yellow-400">⏳ Vérification...</p>
+                </div>
+
+                <!-- Email de Test -->
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-400 mb-2">Email de destination</label>
+                    <input 
+                        type="email" 
+                        id="test-email" 
+                        placeholder="votre-email@gmail.com"
+                        class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:border-[#FFD700] outline-none transition"
+                    >
+                </div>
+
+                <!-- Boutons de Test -->
+                <div class="grid grid-cols-2 gap-4">
+                    <button 
+                        onclick="testWelcomeEmail()"
+                        class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition uppercase text-sm"
+                    >
+                        📧 Test Welcome
+                    </button>
+                    <button 
+                        onclick="testTicketEmail()"
+                        class="bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition uppercase text-sm"
+                    >
+                        🎫 Test Ticket
+                    </button>
+                </div>
+
+                <!-- Logs en Temps Réel -->
+                <div class="bg-black border border-zinc-800 rounded-xl p-4 max-h-96 overflow-y-auto">
+                    <h3 class="text-xs font-bold uppercase text-gray-400 mb-3">📋 Logs</h3>
+                    <div id="logs" class="space-y-2 font-mono text-xs">
+                        <p class="text-gray-600">En attente...</p>
+                    </div>
+                </div>
+
+                <!-- Checklist -->
+                <div class="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
+                    <h3 class="text-xs font-bold uppercase text-gray-400 mb-3">✅ Checklist de Diagnostic</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-400">⚠️</span>
+                            <p class="text-gray-300">Vérifiez votre dossier <strong class="text-[#FFD700]">SPAM/Courrier indésirable</strong></p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-400">⚠️</span>
+                            <p class="text-gray-300">Vérifiez que la <strong class="text-[#FFD700]">validation en 2 étapes</strong> est activée sur Gmail</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-400">⚠️</span>
+                            <p class="text-gray-300">Le <strong class="text-[#FFD700]">mot de passe d'application</strong> doit être correct dans .env</p>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-400">⚠️</span>
+                            <p class="text-gray-300">Attendez <strong class="text-[#FFD700]">1-2 minutes</strong> pour la réception</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Configuration Actuelle -->
+                <div class="bg-zinc-800 border border-zinc-700 rounded-xl p-4">
+                    <h3 class="text-xs font-bold uppercase text-gray-400 mb-3">⚙️ Configuration .env</h3>
+                    <div class="font-mono text-xs space-y-1">
+                        <p class="text-gray-400">EMAIL_USER: <span class="text-[#FFD700]">mpersedal@gmail.com</span></p>
+                        <p class="text-gray-400">EMAIL_PASS: <span class="text-green-400">rtjr ekhp wtxq mxcn</span> ✅</p>
+                    </div>
+                </div>
+
+                <a href="index.html" class="block text-center text-gray-500 text-sm hover:text-[#FFD700] transition">
+                    ← Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check server status
+        async function checkServer() {
+            try {
+                const response = await fetch('http://localhost:3000');
+                if (response.ok) {
+                    document.getElementById('status-text').innerHTML = '✅ <span class="text-green-400">Serveur connecté</span>';
+                } else {
+                    document.getElementById('status-text').innerHTML = '⚠️ <span class="text-yellow-400">Serveur répond mais erreur</span>';
+                }
+            } catch (error) {
+                document.getElementById('status-text').innerHTML = '❌ <span class="text-red-400">Serveur inaccessible - Démarrez "node server.js"</span>';
+            }
+        }
+
+        checkServer();
+
+        function addLog(message, type = 'info') {
+            const colors = {
+                info: 'text-gray-400',
+                success: 'text-green-400',
+                error: 'text-red-400',
+                warning: 'text-yellow-400'
+            };
+            
+            const logsDiv = document.getElementById('logs');
+            if (logsDiv.querySelector('.text-gray-600')) {
+                logsDiv.innerHTML = '';
+            }
+            
+            const time = new Date().toLocaleTimeString();
+            logsDiv.innerHTML += `<p class="${colors[type]}">[${time}] ${message}</p>`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        async function testWelcomeEmail() {
+            const email = document.getElementById('test-email').value;
+            
+            if (!email) {
+                addLog('❌ Veuillez entrer un email', 'error');
+                return;
+            }
+
+            addLog('📤 Envoi de l\'email de bienvenue...', 'info');
+
+            try {
+                const response = await fetch('http://localhost:3000/api/send-welcome', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        firstName: 'Testeur'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    addLog('✅ Email envoyé avec succès !', 'success');
+                    addLog(`📬 Destinataire accepté: ${result.accepted}`, 'success');
+                    if (result.rejected && result.rejected.length > 0) {
+                        addLog(`⚠️ Rejeté: ${result.rejected}`, 'warning');
+                    }
+                    addLog('👉 Vérifiez votre boîte mail (et SPAM)', 'info');
+                } else {
+                    addLog(`❌ Erreur: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                addLog(`❌ Erreur réseau: ${error.message}`, 'error');
+            }
+        }
+
+        async function testTicketEmail() {
+            const email = document.getElementById('test-email').value;
+            
+            if (!email) {
+                addLog('❌ Veuillez entrer un email', 'error');
+                return;
+            }
+
+            addLog('🎫 Envoi du billet de test...', 'info');
+
+            try {
+                const response = await fetch('http://localhost:3000/api/send-ticket', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        activity: 'Test Diagnostic',
+                        date: '20 Mars 2026',
+                        ticketId: '#TEST-' + Math.random().toString(36).substring(2, 8).toUpperCase()
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    addLog('✅ Billet envoyé avec succès !', 'success');
+                    addLog(`📬 Destinataire accepté: ${result.accepted}`, 'success');
+                    if (result.rejected && result.rejected.length > 0) {
+                        addLog(`⚠️ Rejeté: ${result.rejected}`, 'warning');
+                    }
+                    addLog('👉 Vérifiez votre boîte mail (et SPAM)', 'info');
+                    
+                    if (result.preview) {
+                        addLog(`🔗 Mode Test - Cliquez pour voir: ${result.preview}`, 'info');
+                    }
+                } else {
+                    addLog(`❌ Erreur: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                addLog(`❌ Erreur réseau: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

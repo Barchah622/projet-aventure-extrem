@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement Sécurisé | Xtreme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="notifications.css">
+    <script src="notifications.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #000; }
+        .text-gold { color: #FFD700; }
+        .border-gold { border-color: #FFD700; }
+        .bg-gold { background-color: #FFD700; }
+        .glass-panel { background: rgba(24, 24, 27, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="text-white min-h-screen flex flex-col">
+
+    <div class="fixed top-0 left-0 w-full h-1 bg-zinc-800 z-50">
+        <div class="h-full bg-[#FFD700] w-[90%] transition-all duration-500 shadow-[0_0_15px_#FFD700]"></div>
+    </div>
+
+    <nav class="border-b border-white/10 py-6 px-6">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="text-xl font-black uppercase tracking-tighter italic">L'AVENTURE <span class="text-gold">XTREME</span></div>
+            <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#FFD700]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Paiement Sécurisé
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex-grow flex items-center justify-center p-6">
+        <div class="w-full max-w-lg">
+            <div class="text-center mb-10">
+                <p class="text-gray-500 text-xs uppercase tracking-[0.2em] mb-2">Total à régler</p>
+                <h1 id="amount-display" class="text-6xl font-black tracking-tighter text-white">0€</h1>
+                <p id="activity-name" class="text-gold text-sm font-bold uppercase tracking-widest mt-2"></p>
+            </div>
+
+            <div class="glass-panel p-8 rounded-[2rem] shadow-2xl relative overflow-hidden">
+                <!-- Decorative Elements -->
+                <div class="absolute -top-20 -right-20 w-40 h-40 bg-[#FFD700] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+
+                <form action="success.html" method="GET" class="space-y-6 relative z-10">
+                    
+                    <!-- Card Number -->
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-500">Numéro de Carte</label>
+                        <div class="relative">
+                            <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" class="w-full bg-black border border-white/10 rounded-xl p-4 pl-12 outline-none focus:border-[#FFD700] transition text-white font-mono tracking-widest text-lg" required>
+                            <svg class="w-6 h-6 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <!-- Expiry -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-gray-500">Expiration</label>
+                            <input type="text" placeholder="MM/YY" maxlength="5" class="w-full bg-black border border-white/10 rounded-xl p-4 outline-none focus:border-[#FFD700] transition text-white font-mono text-center tracking-widest" required>
+                        </div>
+                        <!-- CVC -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-gray-500">CVC</label>
+                            <div class="relative">
+                                <input type="text" placeholder="123" maxlength="3" class="w-full bg-black border border-white/10 rounded-xl p-4 outline-none focus:border-[#FFD700] transition text-white font-mono text-center tracking-widest" required>
+                                <svg class="w-4 h-4 text-gray-500 absolute right-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cardholder Name -->
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-500">Titulaire de la carte</label>
+                        <input type="text" placeholder="NOM PRÉNOM" class="w-full bg-black border border-white/10 rounded-xl p-4 outline-none focus:border-[#FFD700] transition text-white uppercase tracking-widest" required>
+                    </div>
+
+                    <button type="submit" class="w-full bg-[#FFD700] text-black py-5 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-white hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(255,215,0,0.2)] mt-8 flex justify-center items-center gap-3">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        Payer Maintenant
+                    </button>
+
+                    <div class="flex justify-center items-center gap-4 mt-6 opacity-30">
+                        <span class="text-[10px] uppercase font-bold text-gray-500">Powered by Stripe</span>
+                        <div class="h-3 w-[1px] bg-gray-600"></div>
+                        <span class="text-[10px] uppercase font-bold text-gray-500">AES-256 Encrypted</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const p = new URLSearchParams(window.location.search);
+        // Récupérer les paramètres passés depuis reserver.html
+        const total = p.get('total') || '0€';
+        const activite = p.get('activite') || '';
+        
+        document.getElementById('amount-display').innerText = total;
+        // Clean up activity name (remove 'Réserver ' if present from previous step logic, though reserver.html passes it clean usually)
+        let cleanAct = activite.replace('Réserver ', ''); 
+        // If activite param is just the ID (like 'padel'), we might want to display a nicer name, but 'activite' param usually comes from previous pages. 
+        // In reserver.html, it comes from URL. In index/offre logic, it is passed as ID. 
+        // Let's just uppercase it for style.
+        document.getElementById('activity-name').innerText = "AVENTURE : " + cleanAct.toUpperCase();
+
+        // Handle form submission to save reservation
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get current user from localStorage
+            const user = JSON.parse(localStorage.getItem('xtreme_user'));
+            
+            if (!user) {
+                showError('Vous devez être connecté pour continuer.');
+                setTimeout(() => window.location.href = 'login.html', 2000);
+                return;
+            }
+
+            // Create reservation object
+            const reservation = {
+                id: '#TRIP-2026-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                activity: cleanAct,
+                date: '20 Mars 2026',
+                time: '09:00 AM',
+                seat: '4A (Premium)',
+                price: total,
+                status: 'Confirmé',
+                bookedAt: new Date().toISOString()
+            };
+
+            // Save reservation to user's reservations array
+            if (!user.reservations) {
+                user.reservations = [];
+            }
+            user.reservations.push(reservation);
+            
+            // Update localStorage
+            localStorage.setItem('xtreme_user', JSON.stringify(user));
+
+            // Redirect to success page with email and activity info
+            const params = new URLSearchParams({
+                email: user.email,
+                activite: cleanAct,
+                total: total,
+                ticketId: reservation.id
+            });
+            window.location.href = `success.html?${params.toString()}`;
+        });
+    </script>
+</body>
+</html>
